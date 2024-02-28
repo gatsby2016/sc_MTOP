@@ -110,7 +110,7 @@ def get_windows(xml_path):
     tree = ET.parse(xml_path)
     annos = tree.getroot()
     for anno in annos.findall('Annotation'):
-        if anno.get('LineColor')=='16777215':
+        if anno.get('LineColor')=='65280':
             for vs in anno.iter('Vertices'):
                 wx = []
                 wy = []
@@ -335,11 +335,15 @@ class make_graph_img():
         self.make_img_circle()
         self.make_img_rect(rect_size)
 
-    def write_img(self):
+    def write_img(self, output_path):
         from io import BytesIO
+        
+        os.makedirs(output_path, exist_ok=True)
+        
         for i in range(len(self.window_bbox)):
             # code = cv2.imencode('.png', self.img[i][:, :, ::-1])[1]  # 保存图片
             # byte_stream = BytesIO(code.tobytes())
             # with open(f'./fun_fig/graph_{self.sample_name}_plot{i}.png','wb') as p: # 可以保存任意路径
             #     p.write(code.tobytes())
-            cv2.imwrite(f'./fun_fig/graph_{self.sample_name}_plot{i}.jpg', self.img[i][:, :, ::-1])
+            print(f'>>>>> Saving graph_{self.sample_name}_plot{i}.jpg to {output_path}.')
+            cv2.imwrite(os.path.join(output_path, f'graph_{self.sample_name}_plot{i}.jpg'), self.img[i][:, :, ::-1])

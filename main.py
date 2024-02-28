@@ -42,13 +42,14 @@ visual_cli = """
 Arguments for visual.
 
 Usage:
-    visual --feature_path=<filepath> --wsi_path=<filepath> --xml_path=<filepath>
+    visual --feature_path=<filepath> --wsi_path=<filepath> --xml_path=<filepath> --output_path=<folderpath>
 
 Option:
     --feature_path=<filepath>  Path to feature folder, it show be a folder including feature and edge .csv file.
     --wsi_path=<filepath>      Path to wsi file. 
     --xml_path=<filepath>      Path to xml file. The xml is an annotation file of ImageScope.\
                                Only plot in the scale of annotation.[default: None]
+    --output_path=<folderpath> Path to visualization output.
 """
 
 from docopt import docopt
