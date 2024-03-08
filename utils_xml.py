@@ -8,6 +8,7 @@ from collections import defaultdict
 from openslide import OpenSlide
 import cv2
 import pathlib as plb
+from tqdm import tqdm
 
 clusters_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]# 11个聚类
 cellTypes_id = [0, 1, 2, 3, 4, 5]
@@ -173,8 +174,23 @@ class make_graph_img():
             if os.path.exists(xml_path):
                 window_bbox = get_windows(xml_path)
             else:
-                raise OSError('xml file is not exist')
-                # window_bbox = [[[0, 0], [wsi.level_dimensions[0][0], wsi.level_dimensions[0][1]]]]
+                window_bbox = []
+                patch_width = wsi.level_dimensions[0][0] // 4 
+                patch_height = wsi.level_dimensions[0][1] // 4
+
+                for j in range(4):
+                    for i in range(4): 
+                        x_start = i * patch_width 
+                        y_start = j * patch_height 
+                        x_end = min(wsi.level_dimensions[0][0], x_start + patch_width)
+                        y_end = min(wsi.level_dimensions[0][1], y_start + patch_height)
+                        window_bbox.append([[x_start, y_start], [x_end, y_end]])
+                print(f'>>>>> window bbox Number: {len(window_bbox)}')
+
+                #raise OSError('xml file is not exist')
+                #window_bbox = [[[0, 0], [wsi.level_dimensions[0][0], wsi.level_dimensions[0][1]]]]
+                #window_bbox = [[[wsi.level_dimensions[0][0]//4, wsi.level_dimensions[0][1]//4],[wsi.level_dimensions[0][0]//4*3, wsi.level_dimensions[0][1]//4*3]]]
+                # window_bbox = [[[wsi.level_dimensions[0][0]//2, wsi.level_dimensions[0][1]//2],[wsi.level_dimensions[0][0], wsi.level_dimensions[0][1]]]]
         else:
             assert bbox_size is not None, 'Must give bbox size when cell is not None.'
             window_bbox = []
@@ -210,6 +226,7 @@ class make_graph_img():
                                                                                                    level=0,
                                                                                                    size=patch_size))[:, :, 0:3]
         self.rawimg = self.img.copy()
+        print(f'>>>>> tiling {len(self.rawimg)} ROIs.')
         
         # %%
         # Read vertex information
@@ -258,7 +275,9 @@ class make_graph_img():
         ## Preapare table data
         inbox_name = np.concatenate([inbox_name, name])
         inbox_centroid = np.concatenate([inbox_centroid, centroid])
-        n_data = max(max(source), max(target))
+        # n_data = max(max(source), max(target))
+        n_data = name.max()
+
         name_inbox_tab = np.zeros((n_data + 1), dtype=np.bool_)
         name_inbox_tab[inbox_name] = True
         offset_tab = np.zeros((n_data + 1, 1, 2))
