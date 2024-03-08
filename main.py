@@ -7,18 +7,30 @@ Usage:
 Options:
     -h --help       Show this screen
     
-Two command mode are `tile` and `wsi` to enter corresponding inference mode
-    segment     cell segment from the whole slide image
+Command modes to enter corresponding inference mode
+    segmentWSI  cell segment from the whole slide image
+    segmentTile cell segmentation on tiles
     feature     feature extract
     visual      visualization of the graph and segmentation
 
 Use 'main.py <command> --help' to show their options and usage. 
 """
-segment_cli = """
-Arguments for cell segment using HoVer-Net.
+segmentWSI_cli = """
+Arguments for cell segment on WSI using HoVer-Net.
 
 Usage:
-    segment --input_dir=<path> --output_dir=<path>
+    segmentWSI --input_dir=<path> --output_dir=<path>
+
+Option:
+    --input_dir=<path>     Path to input data directory. Assumes the files are not nested within directory.
+    --output_dir=<path>    Path to output directory.
+"""
+
+segmentTile_cli = """
+Arguments for cell segment on Tile using HoVer-Net.
+
+Usage:
+    segmentTile --input_dir=<path> --output_dir=<path>
 
 Option:
     --input_dir=<path>     Path to input data directory. Assumes the files are not nested within directory.
@@ -55,7 +67,8 @@ Option:
 from docopt import docopt
 
 if __name__ == '__main__':
-    sub_cli_dict = {'segment':segment_cli,
+    sub_cli_dict = {'segmentWSI':segmentWSI_cli,
+                    'segmentTile':segmentTile_cli,
                     'feature':feature_cli,
                     'visual':visual_cli}
     args = docopt(__doc__, help=False, options_first=True)
@@ -75,7 +88,8 @@ if __name__ == '__main__':
     sub_args = docopt(sub_cli_dict[sub_cmd], argv=sub_cmd_args, help=True)
     sub_args = {k.replace('--', '') : v for k, v in sub_args.items()}
     print(sub_args)
-    if sub_cmd=='segment':
+    if sub_cmd in ['segmentWSI', 'segmentTile']:
+        sub_args['sub_cmd'] = 'wsi' if sub_cmd == 'segmentWSI' else 'tile'
         from F1_CellSegment import fun1
         import sys
         sys.path.append('Hover')
