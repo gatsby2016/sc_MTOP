@@ -1,6 +1,7 @@
 import os
 import torch
 
+
 def fun1(input_dir, output_dir, sub_cmd):
     print(input_dir)
     print(output_dir)
@@ -12,13 +13,13 @@ def fun1(input_dir, output_dir, sub_cmd):
         'model_mode':'fast',
         'model_path':model_path, 
         'nr_inference_workers':8, 'nr_post_proc_workers':0,
-        'batch_size':64
+        'batch_size':16
     }
 
     if sub_cmd == 'tile':
         sub_args = {'input_dir': input_dir,
                     'output_dir': output_dir,
-                    'mem_usage':0.3,    #  Declare how much memory (physical + swap) should be used for caching. By default it will load as many tiles as possible till reaching the declared limit. [default: 0.2]
+                    'mem_usage':0.7,    #  Declare how much memory (physical + swap) should be used for caching. By default it will load as many tiles as possible till reaching the declared limit. [default: 0.2]
                     'draw_dot':False,    # To draw nuclei centroid on overlay. [default: True]
                     'save_qupath':True, # To optionally output QuPath v0.2.3 compatible format. [default: True]
                     'save_raw_map':True # To save raw prediction or not. [default: True]
@@ -37,8 +38,8 @@ def fun1(input_dir, output_dir, sub_cmd):
                     'save_thumb':True,    # To save thumb. [default: True]
                     'save_mask':True}     # To save mask. [default: True]
 
-    gpu_list = args.pop('gpu')
-    os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
+    # gpu_list = args.pop('gpu')
+    # os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
 
     nr_gpus = torch.cuda.device_count()
     nr_types = int(args['nr_types']) if int(args['nr_types']) > 0 else None

@@ -1,5 +1,26 @@
 # Single Cell Morphological and Topological Profiling Based on Digital Pathology
 
+### UPDATE
+
+#### segmentation on WSI  
+
+`CUDA_VISIBLE_DEVICES=1 python main.py segmentWSI --input_dir=/data/ --output_dir=/data/1seg`
+
+#### segmentation on Tile
+
+`CUDA_VISIBLE_DEVICES=1 python main.py segmentTile --input_dir=../data/tiles/ --output_dir=/data/1segtiles`
+
+#### feature extraction
+
+`python main.py feature --json_path=../results/1segment/json/1082.json --wsi_path=../data/unittest/1082.svs --output_path=../results/2feat`
+
+#### visualization for one WSI
+
+`python main.py visual --feature_path=../results/2feat/1082/ --wsi_path=../data/unittest/1082.svs --xml_path=None --output_path=../results/3vis/1082/`
+
+没有指定xml-path，上述命令会将整张wsi划分成4*4的网格（16张），每个网格中的window_bbox即为visualization 的ROI。
+
+
 ## Description
 
 sc-MTOP is an analysis framework based on deep learning and computational pathology. It consists of two steps: 1) Nuclear segmentation and classification; 2) Feature extraction. This framework aims to characterize the tumor ecosystem diversity at the single-cell level. We have established a [demo](http://sc-mtop.biosolver.cn/) website to show the functions.

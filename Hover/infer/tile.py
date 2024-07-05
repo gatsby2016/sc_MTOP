@@ -164,6 +164,7 @@ class InferManager(base.InferManager):
         assert len(file_path_list) > 0, 'Not Detected Any Files From Path'
         
         rm_n_mkdir(self.output_dir + '/json/')
+        rm_n_mkdir(self.output_dir + '/instance_npy/')
         rm_n_mkdir(self.output_dir + '/mat/')
         rm_n_mkdir(self.output_dir + '/overlay/')
         if self.save_qupath:
@@ -194,6 +195,10 @@ class InferManager(base.InferManager):
 
             if self.save_raw_map:
                 mat_dict["raw_map"] = pred_map
+
+            save_path = "%s/instance_npy/%s.npy" % (self.output_dir, img_name)
+            np.save(save_path, pred_inst)
+
             save_path = "%s/mat/%s.mat" % (self.output_dir, img_name)
             sio.savemat(save_path, mat_dict)
 

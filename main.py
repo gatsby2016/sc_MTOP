@@ -65,6 +65,9 @@ Option:
 """
 
 from docopt import docopt
+import torch.multiprocessing as torchmp
+torchmp.set_sharing_strategy('file_system')
+
 
 if __name__ == '__main__':
     sub_cli_dict = {'segmentWSI':segmentWSI_cli,
